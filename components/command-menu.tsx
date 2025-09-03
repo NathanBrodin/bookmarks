@@ -5,9 +5,11 @@ import { useRouter } from "next/navigation"
 import { type DialogProps } from "@radix-ui/react-dialog"
 import { ArrowRightIcon, CornerDownLeftIcon, SearchIcon } from "lucide-react"
 
+import { bookmarks } from "@/lib/bookmarks"
+import { categories } from "@/lib/categories"
+import { cn } from "@/lib/utils"
 import { useIsMac } from "@/hooks/use-is-mac"
 import { useMutationObserver } from "@/hooks/use-mutation-observer"
-import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
   CommandDialog,
@@ -20,16 +22,11 @@ import {
 } from "@/components/ui/command"
 import { Kbd } from "@/components/ui/kbd"
 
-export function CommandMenu({
-  navItems,
-  ...props
-}: DialogProps & {
-  navItems?: { href: string; label?: string }[]
-}) {
+export function CommandMenu({ ...props }: DialogProps) {
   const router = useRouter()
   const isMac = useIsMac()
   const [open, setOpen] = React.useState(false)
-  const [selectedType, setSelectedType] = React.useState<"page" | null>(null)
+  const [highlight, setHighlight] = React.useState("")
 
   React.useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -71,49 +68,41 @@ export function CommandMenu({
         <Kbd>{isMac ? "⌘" : "Ctrl"} K</Kbd>
       </Button>
       <CommandDialog
-        title="Search documentation..."
-        description="Search for a command to run..."
+        title="Search bookmarks..."
+        description="Search bookmarks by name..."
         open={open}
         onOpenChange={setOpen}
       >
-        <CommandInput placeholder="Search documentation..." />
+        <CommandInput placeholder="Search bookmarks..." />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
-          {navItems ? (
-            <CommandGroup heading="Pages">
-              {navItems.map((item) => (
+          {categories.map((category) => (
+            <CommandGroup heading={category.label} key={category.id}>
+              {bookmarks.map((bookmark) => (
                 <CommandMenuItem
-                  key={item.href}
-                  value={`Navigation ${item.label}`}
-                  keywords={[
-                    "nav",
-                    "navigation",
-                    item.label?.toLowerCase() ?? item.href.toLowerCase(),
-                  ]}
+                  key={bookmark.href}
+                  value={bookmark.href}
+                  keywords={[bookmark.href]}
                   onHighlight={() => {
-                    setSelectedType("page")
+                    setHighlight(bookmark.href)
                   }}
                   onSelect={() => {
-                    runCommand(() => router.push(item.href))
+                    runCommand(() => router.push(bookmark.href))
                   }}
                 >
                   <ArrowRightIcon />
-                  {item.label}
+                  {bookmark.href}
                 </CommandMenuItem>
               ))}
             </CommandGroup>
-          ) : null}
+          ))}
         </CommandList>
         <CommandFooter>
           <div className="flex min-w-0 shrink-0 items-center gap-2">
             <Kbd>
               <CornerDownLeftIcon />
             </Kbd>{" "}
-            <span className="">
-              {selectedType === "page" || selectedType === "component"
-                ? "Go to Page"
-                : null}
-            </span>
+            <span className="">{highlight ? `Visit ${highlight}` : null}</span>
           </div>
         </CommandFooter>
       </CommandDialog>

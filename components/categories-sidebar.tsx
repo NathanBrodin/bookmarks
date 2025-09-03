@@ -1,0 +1,92 @@
+"use client"
+
+import { useCallback } from "react"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
+
+import { categories } from "@/lib/categories"
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from "@/components/ui/sidebar"
+
+export function CategoriesSidebar({
+  ...props
+}: React.ComponentProps<typeof Sidebar>) {
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+
+  // Get current selected category from search params
+  const selectedCategory = searchParams.get("categories") || null
+
+  // Helper function to clear all categories
+  const clearAllCategories = useCallback(() => {
+    const params = new URLSearchParams(searchParams.toString())
+    params.delete("categories")
+
+    const queryString = params.toString()
+    router.push(pathname + (queryString ? "?" + queryString : ""))
+  }, [searchParams, pathname, router])
+
+  // Helper function to update search params
+  const selectCategory = useCallback(
+    (categoryId: string) => {
+      const params = new URLSearchParams(searchParams.toString())
+
+      if (selectedCategory === categoryId) {
+        // If clicking the same category, clear selection (go to "All Categories")
+        params.delete("categories")
+      } else {
+        // Select new category
+        params.set("categories", categoryId)
+      }
+
+      const queryString = params.toString()
+      router.push(pathname + (queryString ? "?" + queryString : ""))
+    },
+    [searchParams, pathname, router, selectedCategory]
+  )
+
+  return (
+    <Sidebar
+      className="sticky top-[calc(var(--header-height)+1px)] z-30 hidden h-[calc(100svh-var(--header-height)-var(--footer-height))] bg-transparent lg:flex"
+      collapsible="none"
+      {...props}
+    >
+      <SidebarContent className="">
+        <div className="shrink-0" />
+        <SidebarGroup>
+          <SidebarGroupLabel>Categories</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu className="gap-0">
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  onClick={clearAllCategories}
+                  isActive={selectedCategory === null}
+                >
+                  All Categories
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              {categories.map((category) => (
+                <SidebarMenuItem key={category.id}>
+                  <SidebarMenuButton
+                    onClick={() => selectCategory(category.id)}
+                    isActive={selectedCategory === category.id}
+                  >
+                    {category.label}
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+    </Sidebar>
+  )
+}

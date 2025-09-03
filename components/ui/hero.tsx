@@ -11,7 +11,7 @@ function Hero({
     <>
       <section className={cn("border-grid", className)} {...props}>
         <div className="container-wrapper from-primary/2 relative bg-linear-to-t">
-          <div className="container flex flex-col items-center gap-2 py-8 text-center md:py-16 lg:py-30 xl:gap-4">
+          <div className="container flex flex-col items-center gap-2 py-8 text-center md:py-16 xl:gap-4">
             {children}
           </div>
           <Tiles />

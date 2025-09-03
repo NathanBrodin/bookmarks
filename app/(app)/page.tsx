@@ -1,31 +1,50 @@
-import Link from "next/link"
+import { bookmarks } from "@/lib/bookmarks"
+import { Hero, HeroDescription, HeroHeading } from "@/components/ui/hero"
+import { SidebarProvider } from "@/components/ui/sidebar"
+import { Bookmark } from "@/components/bookmark"
+import { CategoriesSidebar } from "@/components/categories-sidebar"
 
-import { Button } from "@/components/ui/button"
-import {
-  Hero,
-  HeroActions,
-  HeroDescription,
-  HeroHeading,
-} from "@/components/ui/hero"
+type HomeProps = {
+  searchParams: { categories?: string }
+}
 
-export default function Home() {
+export default function Home({ searchParams }: HomeProps) {
+  const selectedCategory = searchParams.categories
+
+  // Filter bookmarks based on selected category
+  const filteredBookmarks = selectedCategory
+    ? bookmarks.filter((bookmark) =>
+        bookmark.categories.includes(selectedCategory)
+      )
+    : bookmarks
   return (
     <>
       <Hero>
-        <HeroHeading>Nathan&apos;s Template</HeroHeading>
+        <HeroHeading>Nathan&apos;s Bookmarks</HeroHeading>
         <HeroDescription>
-          Starter app with the brodin/ui component library
+          My collection of design inspiration and useful tools
         </HeroDescription>
-        <HeroActions>
-          <Button asChild>
-            <Link href="/somewhere">Get Started</Link>
-          </Button>
-          <Button asChild variant="outline">
-            <Link href="https://ui.brodin.dev/docs">Read the docs</Link>
-          </Button>
-        </HeroActions>
       </Hero>
-      <section>Content of the page</section>
+      <section className="px-4 py-6 sm:px-6 md:py-12">
+        <div className="grid w-full grid-cols-5 gap-6 xl:gap-16">
+          <div className="col-span-5 max-w-5xl lg:col-span-1">
+            <nav className="sticky top-24">
+              <SidebarProvider className="flex-1">
+                <CategoriesSidebar />
+              </SidebarProvider>
+            </nav>
+          </div>
+          <div className="col-span-5 space-y-2 lg:col-span-4">
+            {filteredBookmarks.map((bookmark) => (
+              <Bookmark
+                key={bookmark.href}
+                href={bookmark.href}
+                categories={bookmark.categories}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
     </>
   )
 }

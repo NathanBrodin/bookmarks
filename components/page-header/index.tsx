@@ -1,12 +1,12 @@
 import Link from "next/link"
 
+import { siteConfig } from "@/lib/config"
+import { Button } from "@/components/ui/button"
+import { Separator } from "@/components/ui/separator"
 import AppIcon from "@/components/app-icon"
 import { CommandMenu } from "@/components/command-menu"
 import { LayoutSelector } from "@/components/layout-selector"
 import { ThemeSelector } from "@/components/theme-selector"
-import { siteConfig } from "@/lib/config"
-import { Button } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
 
 import { Header } from "./header"
 import { MainNav } from "./main-nav"
@@ -21,7 +21,6 @@ export function PageHeader() {
           <AppIcon className="size-5" />
         </Link>
       </Button>
-      <MainNav items={siteConfig.navItems} className="hidden lg:flex" />
       <Toolbar>
         <div className="hidden w-full flex-1 md:flex md:w-auto md:flex-none">
           <CommandMenu navItems={siteConfig.navItems} />

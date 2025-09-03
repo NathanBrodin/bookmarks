@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Nathan's Bookmarks
+
+A simple bookmarks application built with Next.js that automatically fetches website titles and favicons from URLs.
+
+## Features
+
+- 📝 **Simple Data Structure**: Only store URL and categories - titles and favicons are fetched automatically
+- 🎨 **Category Filtering**: Filter bookmarks by category using the sidebar
+- 🔍 **Automatic Metadata**: Fetches page titles and favicons from the actual websites
+- 🎯 **Color-Coded Categories**: Each category has its own color scheme
+- 📱 **Responsive Design**: Works on desktop and mobile devices
+- ⚡ **Fast Loading**: Built with Next.js and optimized for performance
 
 ## Getting Started
 
-First, run the development server:
+### Installation
+
+```bash
+npm install
+```
+
+### Development
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Build
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+```
 
-## Learn More
+## Adding New Bookmarks
 
-To learn more about Next.js, take a look at the following resources:
+To add new bookmarks, edit the `lib/bookmarks.ts` file:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```typescript
+export const bookmarks: BookmarkData[] = [
+  {
+    href: "https://example.com",
+    categories: ["design", "inspiration"],
+  },
+  // Add more bookmarks here...
+]
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Available Categories
 
-## Deploy on Vercel
+The following categories are available with their own color schemes:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `design` - Purple
+- `components` - Blue
+- `react` - Cyan
+- `css` - Orange
+- `utility` - Green
+- `development` - Gray
+- `tools` - Yellow
+- `git` - Red
+- `inspiration` - Pink
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+You can add new categories by editing `lib/categories.ts`.
+
+## How It Works
+
+1. **Data Storage**: Bookmarks are stored as simple objects with `href` and `categories`
+2. **Metadata Fetching**: The app automatically fetches page titles and favicons using a Next.js API route (`/api/bookmark-metadata`)
+3. **Server-Side Processing**: Metadata is fetched server-side to avoid CORS issues
+4. **Caching**: Results are cached in component state to avoid refetching
+5. **Fallbacks**: If fetching fails, it gracefully falls back to the domain name as title
