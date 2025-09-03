@@ -76,26 +76,67 @@ export function CommandMenu({ ...props }: DialogProps) {
         <CommandInput placeholder="Search bookmarks..." />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
-          {categories.map((category) => (
-            <CommandGroup heading={category.label} key={category.id}>
-              {bookmarks.map((bookmark) => (
-                <CommandMenuItem
-                  key={bookmark.href}
-                  value={bookmark.href}
-                  keywords={[bookmark.href]}
-                  onHighlight={() => {
-                    setHighlight(bookmark.href)
-                  }}
-                  onSelect={() => {
-                    runCommand(() => router.push(bookmark.href))
-                  }}
-                >
-                  <ArrowRightIcon />
-                  {bookmark.href}
-                </CommandMenuItem>
-              ))}
-            </CommandGroup>
-          ))}
+          <CommandGroup heading="Categories">
+            <CommandMenuItem
+              value="all categories"
+              keywords={["all", "categories", "clear", "reset"]}
+              onHighlight={() => {
+                setHighlight("All Categories")
+              }}
+              onSelect={() => {
+                runCommand(() => router.push("/"))
+              }}
+              className="flex items-center gap-2 overflow-hidden"
+            >
+              <ArrowRightIcon className="shrink-0" />
+              <span className="truncate">All Categories</span>
+            </CommandMenuItem>
+            {categories.map((category) => (
+              <CommandMenuItem
+                key={category.id}
+                value={`filter ${category.label.toLowerCase()}`}
+                keywords={[
+                  category.label.toLowerCase(),
+                  category.id,
+                  "filter",
+                  "category",
+                ]}
+                onHighlight={() => {
+                  setHighlight(`Filter by ${category.label}`)
+                }}
+                onSelect={() => {
+                  runCommand(() => router.push(`/?categories=${category.id}`))
+                }}
+                className="flex items-center gap-2 overflow-hidden"
+              >
+                <ArrowRightIcon className="shrink-0" />
+                <span className="truncate">Filter by {category.label}</span>
+              </CommandMenuItem>
+            ))}
+          </CommandGroup>
+          <CommandGroup heading="Bookmarks">
+            {bookmarks.map((bookmark) => (
+              <CommandMenuItem
+                key={bookmark.href}
+                value={`${bookmark.title} ${bookmark.href}`}
+                keywords={[
+                  bookmark.href,
+                  bookmark.title,
+                  ...bookmark.categories,
+                ]}
+                onHighlight={() => {
+                  setHighlight(bookmark.href)
+                }}
+                onSelect={() => {
+                  runCommand(() => router.push(bookmark.href))
+                }}
+                className="flex items-center gap-2 overflow-hidden"
+              >
+                <ArrowRightIcon className="shrink-0" />
+                <span className="truncate">{bookmark.title}</span>
+              </CommandMenuItem>
+            ))}
+          </CommandGroup>
         </CommandList>
         <CommandFooter>
           <div className="flex min-w-0 shrink-0 items-center gap-2">

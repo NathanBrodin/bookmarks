@@ -6,77 +6,35 @@ export type BookmarkData = {
 export type BookmarkWithMetadata = BookmarkData & {
   title: string
   favicon?: string
-  loading?: boolean
-  error?: string
 }
 
-export const bookmarks: BookmarkData[] = [
+export const bookmarks: BookmarkWithMetadata[] = [
   {
+    title: "The Foundation for your Design System - shadcn/ui",
     href: "https://ui.shadcn.com",
     categories: ["design", "components", "react"],
   },
   {
+    title:
+      "Tailwind CSS - Rapidly build modern websites without ever leaving your HTML",
     href: "https://tailwindcss.com",
     categories: ["css", "design", "utility"],
   },
   {
+    title:
+      "GitHub · Build and ship software on a single, collaborative platform",
     href: "https://github.com",
     categories: ["development", "tools", "git"],
   },
   {
+    title:
+      "Dribbble - Discover the World’s Top Designers & Creative Professionals",
     href: "https://dribbble.com",
     categories: ["design", "inspiration"],
   },
   {
-    href: "https://v0.dev",
-    categories: ["design", "tools", "components"],
-  },
-  {
+    title: "Fontjoy - Generate font pairings in one click",
     href: "https://fontjoy.com",
     categories: ["design", "tools"],
   },
-  {
-    href: "https://coolors.co",
-    categories: ["design", "tools", "inspiration"],
-  },
-  {
-    href: "https://react.dev",
-    categories: ["react", "development"],
-  },
-  {
-    href: "https://nextjs.org",
-    categories: ["react", "development", "tools"],
-  },
-  {
-    href: "https://vercel.com",
-    categories: ["development", "tools", "utility"],
-  },
-  {
-    href: "https://figma.com",
-    categories: ["design", "tools"],
-  },
-  {
-    href: "https://linear.app",
-    categories: ["tools", "development"],
-  },
 ]
-
-export async function fetchBookmarkMetadata(
-  url: string
-): Promise<{ title: string; favicon?: string }> {
-  try {
-    const response = await fetch(
-      `/api/bookmark-metadata?url=${encodeURIComponent(url)}`
-    )
-    if (!response.ok) {
-      throw new Error("Failed to fetch metadata")
-    }
-    return await response.json()
-  } catch (error) {
-    console.error("Error fetching bookmark metadata:", error)
-    return {
-      title: new URL(url).hostname,
-      favicon: undefined,
-    }
-  }
-}

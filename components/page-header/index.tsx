@@ -9,7 +9,6 @@ import { LayoutSelector } from "@/components/layout-selector"
 import { ThemeSelector } from "@/components/theme-selector"
 
 import { Header } from "./header"
-import { MainNav } from "./main-nav"
 import { MobileNav } from "./mobile-nav"
 import { Toolbar } from "./toolbar"
 
@@ -23,7 +22,7 @@ export function PageHeader() {
       </Button>
       <Toolbar>
         <div className="hidden w-full flex-1 md:flex md:w-auto md:flex-none">
-          <CommandMenu navItems={siteConfig.navItems} />
+          <CommandMenu />
         </div>
         <Separator orientation="vertical" className="3xl:flex hidden" />
         <LayoutSelector className="3xl:flex hidden" />

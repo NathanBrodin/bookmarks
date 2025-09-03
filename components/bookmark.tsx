@@ -1,51 +1,10 @@
-"use client"
-
-import { useEffect, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 
-import {
-  fetchBookmarkMetadata,
-  type BookmarkWithMetadata,
-} from "@/lib/bookmarks"
+import { type BookmarkWithMetadata } from "@/lib/bookmarks"
 import { categories as categoryData } from "@/lib/categories"
 
-type BookmarkProps = {
-  href: string
-  categories: string[]
-}
-
-export function Bookmark({ href, categories }: BookmarkProps) {
-  const [bookmark, setBookmark] = useState<BookmarkWithMetadata>({
-    href,
-    categories,
-    title: new URL(href).hostname,
-    loading: true,
-  })
-
-  useEffect(() => {
-    const loadMetadata = async () => {
-      try {
-        const metadata = await fetchBookmarkMetadata(href)
-        setBookmark((prev) => ({
-          ...prev,
-          title: metadata.title,
-          favicon: metadata.favicon,
-          loading: false,
-        }))
-      } catch (error) {
-        setBookmark((prev) => ({
-          ...prev,
-          title: new URL(href).hostname,
-          loading: false,
-          error: error instanceof Error ? error.message : "Failed to load",
-        }))
-      }
-    }
-
-    loadMetadata()
-  }, [href])
-
+export function Bookmark(bookmark: BookmarkWithMetadata) {
   const getCategoryStyle = (categoryId: string) => {
     const category = categoryData.find((cat) => cat.id === categoryId)
     return (
@@ -82,18 +41,10 @@ export function Bookmark({ href, categories }: BookmarkProps) {
       </svg>
       <div className="flex shrink-0 flex-col items-start gap-2 lg:flex-row lg:items-center">
         <h2 className="decoration-primary-fixed/20 hover:decoration-primary-fixed/80 group-hover:decoration-primary-fixed/80 text-foreground text-[0.9375rem] underline">
-          {bookmark.loading ? (
-            <span className="inline-block h-4 w-32 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></span>
-          ) : bookmark.error ? (
-            <span className="text-red-500">Failed to load</span>
-          ) : (
-            bookmark.title
-          )}
+          {bookmark.title}
         </h2>
         <div className="hidden -space-x-1.5 hover:space-x-2 lg:flex">
-          {bookmark.loading ? (
-            <div className="size-4 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
-          ) : bookmark.favicon && !bookmark.error ? (
+          {bookmark.favicon && (
             <Image
               src={bookmark.favicon}
               alt=""
@@ -104,15 +55,13 @@ export function Bookmark({ href, categories }: BookmarkProps) {
                 e.currentTarget.style.display = "none"
               }}
             />
-          ) : null}
+          )}
         </div>
       </div>
       <hr className="border-border/50 hidden w-full opacity-60 group-hover:invisible lg:flex dark:opacity-40" />
       <div className="flex w-full shrink-0 items-center gap-1 lg:w-fit">
         <div className="flex -space-x-1.5 lg:hidden">
-          {bookmark.loading ? (
-            <div className="size-4 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
-          ) : bookmark.favicon && !bookmark.error ? (
+          {bookmark.favicon && (
             <Image
               src={bookmark.favicon}
               alt=""
@@ -123,7 +72,7 @@ export function Bookmark({ href, categories }: BookmarkProps) {
                 e.currentTarget.style.display = "none"
               }}
             />
-          ) : null}
+          )}
         </div>
         {bookmark.categories && bookmark.categories.length > 0 && (
           <>
