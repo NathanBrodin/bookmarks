@@ -18,9 +18,9 @@ export function Bookmark(bookmark: BookmarkData) {
     <Link
       href={bookmark.url}
       target="_blank"
-      className="group hover:border-grid hover:bg-grid/50 relative flex flex-col items-start justify-between gap-2 rounded border border-transparent p-2 hover:[box-shadow:_var(--sh-alt)] lg:min-h-[42px] lg:flex-row lg:items-center"
+      className="group hover:border-grid hover:bg-grid/50 hover:shadow-alt relative flex flex-col items-start justify-between gap-2 rounded border border-transparent p-2 lg:min-h-[42px] lg:flex-row lg:items-center"
     >
-      <svg className="text-grid pointer-events-none invisible absolute inset-0 [z-index:-1] size-full [mask-image:linear-gradient(to_left,_#ffffffad,_transparent)] opacity-50 select-none group-hover:visible dark:opacity-80">
+      <svg className="text-grid pointer-events-none invisible absolute inset-0 [z-index:-1] size-full [mask-image:linear-gradient(to_left,_#ffffffad,_transparent)] opacity-50 select-none group-hover:visible">
         <defs>
           <pattern
             id=":S6:"
@@ -60,7 +60,7 @@ export function Bookmark(bookmark: BookmarkData) {
           )}
         </div>
       </div>
-      <hr className="border-border/50 hidden w-full opacity-60 group-hover:invisible lg:flex dark:opacity-40" />
+      <hr className="border-border/50 hidden w-full opacity-60 group-hover:invisible lg:flex dark:opacity-90" />
       <div className="flex w-full shrink-0 items-center gap-1 lg:w-fit">
         <div className="flex -space-x-1.5 lg:hidden">
           {bookmark.favicon && (
@@ -92,8 +92,8 @@ export function Bookmark(bookmark: BookmarkData) {
             <span className="hidden opacity-15 lg:flex">|</span>
           </>
         )}
-        <p className="text-offgray-600 dark:text-offgray-500 ml-auto font-mono text-xs">
-          Sep 03, 2025
+        <p className="text-muted-foreground ml-auto font-mono text-xs">
+          {bookmark.author}
         </p>
       </div>
       <hr className="border-border/50 flex w-full opacity-60 group-hover:invisible lg:hidden dark:opacity-40" />

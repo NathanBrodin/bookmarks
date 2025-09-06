@@ -2,10 +2,10 @@
 
 import * as React from "react"
 import { useRouter } from "next/navigation"
+import { Bookmark } from "@/db/schema"
 import { type DialogProps } from "@radix-ui/react-dialog"
 import { ArrowRightIcon, CornerDownLeftIcon, SearchIcon } from "lucide-react"
 
-import { Bookmark } from "@/lib/bookmarks"
 import { categories } from "@/lib/categories"
 import { cn } from "@/lib/utils"
 import { useIsMac } from "@/hooks/use-is-mac"
@@ -95,11 +95,11 @@ export function CommandMenu({ ...props }: DialogProps) {
             </CommandMenuItem>
             {categories.map((category) => (
               <CommandMenuItem
-                key={category.id}
+                key={category.value}
                 value={`filter ${category.label.toLowerCase()}`}
                 keywords={[
                   category.label.toLowerCase(),
-                  category.id,
+                  category.value,
                   "filter",
                   "category",
                 ]}
@@ -107,7 +107,9 @@ export function CommandMenu({ ...props }: DialogProps) {
                   setHighlight(`Filter by ${category.label}`)
                 }}
                 onSelect={() => {
-                  runCommand(() => router.push(`/?categories=${category.id}`))
+                  runCommand(() =>
+                    router.push(`/?categories=${category.value}`)
+                  )
                 }}
                 className="flex items-center gap-2 overflow-hidden"
               >
