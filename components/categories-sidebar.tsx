@@ -74,10 +74,10 @@ export function CategoriesSidebar({
                 </SidebarMenuButton>
               </SidebarMenuItem>
               {categories.map((category) => (
-                <SidebarMenuItem key={category.id}>
+                <SidebarMenuItem key={category.value}>
                   <SidebarMenuButton
-                    onClick={() => selectCategory(category.id)}
-                    isActive={selectedCategory === category.id}
+                    onClick={() => selectCategory(category.value)}
+                    isActive={selectedCategory === category.value}
                   >
                     {category.label}
                   </SidebarMenuButton>

@@ -1,12 +1,14 @@
+"use client"
+
 import Image from "next/image"
 import Link from "next/link"
+import { Bookmark as BookmarkData } from "@/db/schema"
 
-import { type BookmarkWithMetadata } from "@/lib/bookmarks"
 import { categories as categoryData } from "@/lib/categories"
 
-export function Bookmark(bookmark: BookmarkWithMetadata) {
+export function Bookmark(bookmark: BookmarkData) {
   const getCategoryStyle = (categoryId: string) => {
-    const category = categoryData.find((cat) => cat.id === categoryId)
+    const category = categoryData.find((cat) => cat.value === categoryId)
     return (
       category?.classlabel ||
       "border-gray-300 bg-gray-200/10 text-gray-900 dark:border-gray-400/15 dark:bg-gray-800/5 dark:text-gray-200"
@@ -14,7 +16,7 @@ export function Bookmark(bookmark: BookmarkWithMetadata) {
   }
   return (
     <Link
-      href={bookmark.href}
+      href={bookmark.url}
       target="_blank"
       className="group hover:border-grid hover:bg-grid/50 relative flex flex-col items-start justify-between gap-2 rounded border border-transparent p-2 hover:[box-shadow:_var(--sh-alt)] lg:min-h-[42px] lg:flex-row lg:items-center"
     >

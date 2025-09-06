@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { type DialogProps } from "@radix-ui/react-dialog"
 import { ArrowRightIcon, CornerDownLeftIcon, SearchIcon } from "lucide-react"
 
-import { bookmarks } from "@/lib/bookmarks"
+import { Bookmark } from "@/lib/bookmarks"
 import { categories } from "@/lib/categories"
 import { cn } from "@/lib/utils"
 import { useIsMac } from "@/hooks/use-is-mac"
@@ -53,6 +53,8 @@ export function CommandMenu({ ...props }: DialogProps) {
     setOpen(false)
     command()
   }, [])
+
+  const bookmarks: Bookmark[] = []
 
   return (
     <>
@@ -117,18 +119,18 @@ export function CommandMenu({ ...props }: DialogProps) {
           <CommandGroup heading="Bookmarks">
             {bookmarks.map((bookmark) => (
               <CommandMenuItem
-                key={bookmark.href}
-                value={`${bookmark.title} ${bookmark.href}`}
+                key={bookmark.url}
+                value={`${bookmark.title} ${bookmark.url}`}
                 keywords={[
-                  bookmark.href,
+                  bookmark.url,
                   bookmark.title,
                   ...bookmark.categories,
                 ]}
                 onHighlight={() => {
-                  setHighlight(bookmark.href)
+                  setHighlight(bookmark.url)
                 }}
                 onSelect={() => {
-                  runCommand(() => router.push(bookmark.href))
+                  runCommand(() => router.push(bookmark.url))
                 }}
                 className="flex items-center gap-2 overflow-hidden"
               >

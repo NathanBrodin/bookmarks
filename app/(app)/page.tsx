@@ -1,22 +1,26 @@
-import { bookmarks } from "@/lib/bookmarks"
+import { getBookmarks } from "@/lib/actions/bookmark"
 import { Hero, HeroDescription, HeroHeading } from "@/components/ui/hero"
 import { SidebarProvider } from "@/components/ui/sidebar"
 import { Bookmark } from "@/components/bookmark"
 import { CategoriesSidebar } from "@/components/categories-sidebar"
 
 type HomeProps = {
-  searchParams: { categories?: string }
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
-export default function Home({ searchParams }: HomeProps) {
-  const selectedCategory = searchParams.categories
+export default async function Home({ searchParams }: HomeProps) {
+  const params = await searchParams
+  const selectedCategory =
+    typeof params.categories === "string" ? params.categories : undefined
 
-  // Filter bookmarks based on selected category
+  const bookmarks = await getBookmarks()
+
   const filteredBookmarks = selectedCategory
     ? bookmarks.filter((bookmark) =>
         bookmark.categories.includes(selectedCategory)
       )
     : bookmarks
+
   return (
     <>
       <Hero>
@@ -36,7 +40,7 @@ export default function Home({ searchParams }: HomeProps) {
           </div>
           <div className="col-span-5 space-y-2 lg:col-span-4">
             {filteredBookmarks.map((bookmark) => (
-              <Bookmark key={bookmark.href} {...bookmark} />
+              <Bookmark key={bookmark.id} {...bookmark} />
             ))}
           </div>
         </div>
