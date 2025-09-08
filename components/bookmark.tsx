@@ -56,6 +56,7 @@ export function Bookmark(bookmark: BookmarkData) {
               onError={(e) => {
                 e.currentTarget.style.display = "none"
               }}
+              unoptimized
             />
           )}
         </div>
@@ -73,6 +74,7 @@ export function Bookmark(bookmark: BookmarkData) {
               onError={(e) => {
                 e.currentTarget.style.display = "none"
               }}
+              unoptimized
             />
           )}
         </div>

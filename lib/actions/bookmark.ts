@@ -1,13 +1,23 @@
 "use server"
 
 import { revalidateTag, unstable_cache } from "next/cache"
+import { headers } from "next/headers"
 import { db } from "@/db"
 import { bookmarks, bookmarkSchema } from "@/db/schema"
+
+import { auth } from "../auth"
 
 export default async function addBookmark(
   prevState: any /* eslint-disable-line */,
   formData: FormData
 ) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  })
+
+  if (session?.user.id != process.env.NATHAN_ID)
+    throw new Error("Only Nathan can add bookmarks")
+
   try {
     const validatedData = bookmarkSchema.safeParse({
       url: formData.get("url"),
