@@ -89,8 +89,10 @@ export function Bookmark(bookmark: BookmarkData) {
                 </div>
               ))}
             </div>
-            <span className="hidden opacity-15 lg:flex">|</span>
           </>
+        )}
+        {bookmark.author && (
+          <span className="hidden opacity-15 lg:flex">|</span>
         )}
         <p className="text-muted-foreground ml-auto font-mono text-xs">
           {bookmark.author}
