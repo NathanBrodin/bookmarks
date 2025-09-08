@@ -7,6 +7,8 @@ import { Bookmark as BookmarkData } from "@/db/schema"
 import { categories as categoryData } from "@/lib/categories"
 
 export function Bookmark(bookmark: BookmarkData) {
+  const patternId = `pattern-${bookmark.id}`
+
   const getCategoryStyle = (categoryId: string) => {
     const category = categoryData.find((cat) => cat.value === categoryId)
     return (
@@ -18,12 +20,12 @@ export function Bookmark(bookmark: BookmarkData) {
     <Link
       href={bookmark.url}
       target="_blank"
-      className="group hover:border-grid hover:bg-grid/50 hover:shadow-alt relative flex flex-col items-start justify-between gap-2 rounded border border-transparent p-2 lg:min-h-[42px] lg:flex-row lg:items-center"
+      className="group hover:border-secondary-foreground/30 hover:bg-grid/50 hover:shadow-alt relative flex flex-col items-start justify-between gap-2 rounded border border-transparent p-2 lg:min-h-[42px] lg:flex-row lg:items-center"
     >
-      <svg className="text-grid pointer-events-none invisible absolute inset-0 [z-index:-1] size-full [mask-image:linear-gradient(to_left,_#ffffffad,_transparent)] opacity-50 select-none group-hover:visible">
+      <svg className="text-primary/20 pointer-events-none invisible absolute inset-0 [z-index:-1] size-full [mask-image:linear-gradient(to_left,var(--color-primary),_transparent)] opacity-50 select-none group-hover:visible">
         <defs>
           <pattern
-            id=":S6:"
+            id={patternId}
             width="4"
             height="4"
             patternUnits="userSpaceOnUse"
@@ -39,7 +41,7 @@ export function Bookmark(bookmark: BookmarkData) {
             ></line>
           </pattern>
         </defs>
-        <rect width="100%" height="100%" fill="url(#:S6:)"></rect>
+        <rect width="100%" height="100%" fill={`url(#${patternId})`}></rect>
       </svg>
       <div className="flex shrink-0 flex-col items-start gap-2 lg:flex-row lg:items-center">
         <h2 className="decoration-primary-fixed/20 hover:decoration-primary-fixed/80 group-hover:decoration-primary-fixed/80 text-foreground text-[0.9375rem] underline">
