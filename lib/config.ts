@@ -1,11 +1,11 @@
 export const siteConfig = {
-  name: "My App",
-  description: "My new app",
-  url: "https://myapp.brodin.dev",
-  ogImage: "https://myapp.brodin.brodin/opengraph-image.png",
+  name: "Nathan's Bookmarks",
+  description: "My collection of design inspiration and useful tools",
+  url: "https://bookmarks.brodin.dev",
+  ogImage: "https://bookmarks.brodin.dev/opengraph-image.png",
   links: {
     twitter: "https://twitter.com/nathan_brodin",
-    github: "https://github.com/NathanBrodin/myapp",
+    github: "https://github.com/NathanBrodin/bookmarks",
   },
   author: {
     name: "Nathan Brodin",

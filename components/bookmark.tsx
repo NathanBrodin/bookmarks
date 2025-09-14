@@ -82,7 +82,9 @@ export function Bookmark(bookmark: BookmarkData) {
         </div>
         {bookmark.categories && bookmark.categories.length > 0 && (
           <>
-            <span className="flex opacity-15 lg:hidden">|</span>
+            {bookmark.favicon && (
+              <span className="flex opacity-15 lg:hidden">|</span>
+            )}
             <div className="flex flex-wrap gap-2">
               {bookmark.categories.map((category, index) => (
                 <div
@@ -102,7 +104,7 @@ export function Bookmark(bookmark: BookmarkData) {
           {bookmark.author}
         </p>
       </div>
-      <hr className="border-border/50 flex w-full opacity-60 group-hover:invisible lg:hidden dark:opacity-40" />
+      <hr className="border-border flex w-full opacity-60 group-hover:invisible lg:hidden dark:opacity-40" />
     </Link>
   )
 }

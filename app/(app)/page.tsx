@@ -3,6 +3,7 @@ import { Hero, HeroDescription, HeroHeading } from "@/components/ui/hero"
 import { SidebarProvider } from "@/components/ui/sidebar"
 import { Bookmark } from "@/components/bookmark"
 import { CategoriesSidebar } from "@/components/categories-sidebar"
+import { Search } from "@/components/search"
 
 type HomeProps = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
@@ -29,7 +30,8 @@ export default async function Home({ searchParams }: HomeProps) {
           My collection of design inspiration and useful tools
         </HeroDescription>
       </Hero>
-      <section className="px-4 py-6 sm:px-6 md:py-12">
+      <Search />
+      <section className="px-4 sm:px-6 sm:py-4">
         <div className="grid w-full grid-cols-5 gap-6 xl:gap-16">
           <div className="col-span-5 max-w-5xl lg:col-span-1">
             <nav className="sticky top-24">

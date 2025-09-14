@@ -29,10 +29,6 @@ export async function PageHeader() {
       </Button>
       <Toolbar>
         {session && <BookmarkForm />}
-        <div className="hidden w-full flex-1 md:flex md:w-auto md:flex-none">
-          <CommandMenu />
-        </div>
-        <Separator orientation="vertical" className="3xl:flex hidden" />
         <LayoutSelector className="3xl:flex hidden" />
         <Separator orientation="vertical" />
         <ThemeSelector variant="small" />
