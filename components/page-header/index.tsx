@@ -6,7 +6,6 @@ import { siteConfig } from "@/lib/config"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import AppIcon from "@/components/app-icon"
-import { CommandMenu } from "@/components/command-menu"
 import { LayoutSelector } from "@/components/layout-selector"
 import { ThemeSelector } from "@/components/theme-selector"
 
