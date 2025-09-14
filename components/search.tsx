@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useId, useState } from "react"
+import { useCallback, useEffect, useId, useRef, useState } from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { SearchIcon, XIcon } from "lucide-react"
 
@@ -12,6 +12,7 @@ export function Search() {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
+  const inputRef = useRef<HTMLInputElement>(null)
 
   // Get current search query from URL params
   const currentSearch = searchParams.get("search") || ""
@@ -21,6 +22,33 @@ export function Search() {
   useEffect(() => {
     setSearchValue(currentSearch)
   }, [currentSearch])
+
+  // Auto-focus input when user starts typing
+  useEffect(() => {
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      // Don't focus if user is typing in another input or if modifier keys are pressed
+      if (
+        e.target instanceof HTMLInputElement ||
+        e.target instanceof HTMLTextAreaElement ||
+        e.ctrlKey ||
+        e.metaKey ||
+        e.altKey ||
+        e.key === "Escape" ||
+        e.key === "Tab" ||
+        e.key === "Enter"
+      ) {
+        return
+      }
+
+      // Focus the search input and let the character be typed
+      if (inputRef.current && e.key.length === 1) {
+        inputRef.current.focus()
+      }
+    }
+
+    document.addEventListener("keydown", handleGlobalKeyDown)
+    return () => document.removeEventListener("keydown", handleGlobalKeyDown)
+  }, [])
 
   const updateSearchParams = useCallback(
     (searchQuery: string) => {
@@ -38,18 +66,14 @@ export function Search() {
     [searchParams, pathname, router]
   )
 
-  const handleSearch = useCallback(() => {
-    updateSearchParams(searchValue)
-  }, [searchValue, updateSearchParams])
-
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      if (e.key === "Enter") {
-        e.preventDefault()
-        handleSearch()
-      }
+  const handleInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value
+      setSearchValue(value)
+      // Apply search on each keystroke
+      updateSearchParams(value)
     },
-    [handleSearch]
+    [updateSearchParams]
   )
 
   const handleClear = useCallback(() => {
@@ -61,13 +85,13 @@ export function Search() {
     <section className="flex gap-4 px-8 py-4">
       <div className="bg-card relative w-full">
         <Input
+          ref={inputRef}
           id={id}
           className="peer ps-9"
           placeholder="Search bookmarks"
           autoComplete="off"
           value={searchValue}
-          onChange={(e) => setSearchValue(e.target.value)}
-          onKeyDown={handleKeyDown}
+          onChange={handleInputChange}
         />
         <div className="text-muted-foreground/80 pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 peer-disabled:opacity-50">
           <SearchIcon size={16} aria-hidden="true" />
@@ -82,9 +106,7 @@ export function Search() {
           </button>
         )}
       </div>
-      <Button variant="secondary" onClick={handleSearch}>
-        Search
-      </Button>
+      <Button variant="secondary">Search</Button>
     </section>
   )
 }
