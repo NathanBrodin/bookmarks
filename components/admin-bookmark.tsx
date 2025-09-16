@@ -7,6 +7,8 @@ import { Bookmark as BookmarkData } from "@/db/schema"
 
 import { categories as categoryData } from "@/lib/categories"
 
+import { Badge } from "./ui/badge"
+
 export function AdminBookmark(bookmark: BookmarkData) {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -18,12 +20,9 @@ export function AdminBookmark(bookmark: BookmarkData) {
     router.push(`?${params.toString()}`)
   }
 
-  const getCategoryStyle = (categoryId: string) => {
+  const getCategoryVariant = (categoryId: string) => {
     const category = categoryData.find((cat) => cat.value === categoryId)
-    return (
-      category?.classlabel ||
-      "border-gray-300 bg-gray-200/10 text-gray-900 dark:border-gray-400/15 dark:bg-gray-800/5 dark:text-gray-200"
-    )
+    return category?.variant || "gray"
   }
 
   return (
@@ -97,12 +96,13 @@ export function AdminBookmark(bookmark: BookmarkData) {
               )}
               <div className="flex flex-wrap gap-2">
                 {bookmark.categories.map((category, index) => (
-                  <div
+                  <Badge
                     key={index}
-                    className={`flex h-[18px] w-fit shrink-0 items-center gap-1.5 rounded-xs border border-dotted px-1 font-mono text-[0.625rem] leading-6 ${getCategoryStyle(category)}`}
+                    variant={getCategoryVariant(category)}
+                    className="h-[18px] text-[0.625rem] leading-6"
                   >
                     {category}
-                  </div>
+                  </Badge>
                 ))}
               </div>
             </>

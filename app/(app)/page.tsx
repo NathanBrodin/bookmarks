@@ -1,6 +1,5 @@
 import { getBookmarks } from "@/lib/actions/bookmark"
 import { Hero, HeroDescription, HeroHeading } from "@/components/ui/hero"
-import { SidebarProvider } from "@/components/ui/sidebar"
 import { Bookmark } from "@/components/bookmark"
 import { CategoriesSidebar } from "@/components/categories-sidebar"
 import { Search } from "@/components/search"
