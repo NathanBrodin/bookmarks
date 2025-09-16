@@ -82,7 +82,7 @@ export function Search() {
   }, [updateSearchParams])
 
   return (
-    <section className="flex gap-4 px-8 py-4">
+    <section className="flex gap-2 px-2 py-2 lg:gap-4 lg:px-8 lg:py-4">
       <div className="bg-card relative w-full">
         <Input
           ref={inputRef}
@@ -106,7 +106,10 @@ export function Search() {
           </button>
         )}
       </div>
-      <Button variant="secondary">Search</Button>
+      <Button variant="secondary">
+        <span className="hidden lg:flex">Search</span>
+        <SearchIcon className="flex size-4 lg:hidden" aria-hidden="true" />
+      </Button>
     </section>
   )
 }

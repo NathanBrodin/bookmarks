@@ -53,6 +53,7 @@ export function BookmarkForm({ editingBookmark }: BookmarkFormProps) {
   const [title, setTitle] = useState("")
   const [author, setAuthor] = useState("")
   const [favicon, setFavicon] = useState("")
+  const [prevPending, setPrevPending] = useState(false)
 
   const { metadata, loading, error, fetchMetadata, clearMetadata } =
     useUrlMetadata()
@@ -75,17 +76,33 @@ export function BookmarkForm({ editingBookmark }: BookmarkFormProps) {
     }
   }, [metadata])
 
+  // Track pending state changes
+  useEffect(() => {
+    setPrevPending(pending)
+  }, [pending])
+
   // Reset form after successful submission
   useEffect(() => {
-    if (state && !state.errors && !pending) {
+    // Detect when we just finished submitting (prevPending was true, now false)
+    // and there are no errors in the state
+    if (prevPending && !pending && !state?.errors) {
       if (editingBookmark) {
         // Clear edit search param after successful update
         router.push(pathname)
       } else {
+        // Reset form for new bookmark
         resetForm()
       }
     }
-  }, [state, pending, resetForm, editingBookmark, router, pathname])
+  }, [
+    prevPending,
+    pending,
+    state,
+    resetForm,
+    editingBookmark,
+    router,
+    pathname,
+  ])
 
   // Populate form fields when editingBookmark changes
   useEffect(() => {
@@ -150,11 +167,13 @@ export function BookmarkForm({ editingBookmark }: BookmarkFormProps) {
             ? "Update the bookmark details."
             : "Add a new bookmark to your collection."}
         </CardDescription>
-        <CardAction>
-          <Button variant="destructive" onClick={onDelete}>
-            Delete
-          </Button>
-        </CardAction>
+        {editingBookmark && (
+          <CardAction>
+            <Button variant="destructive" onClick={onDelete}>
+              Delete
+            </Button>
+          </CardAction>
+        )}
       </CardHeader>
       <form action={formAction}>
         {editingBookmark && (
@@ -315,14 +334,19 @@ export function BookmarkForm({ editingBookmark }: BookmarkFormProps) {
         </div>
         <CardFooter className="flex-col gap-2">
           {!editingBookmark ? (
-            <Button variant="outline" className="w-full" onClick={resetForm}>
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              onClick={resetForm}
+            >
               Cancel
             </Button>
           ) : (
             <Button
               variant="outline"
               className="w-full"
-              onClick={() => router.push(window.location.pathname)}
+              onClick={() => router.push(pathname)}
             >
               Cancel
             </Button>

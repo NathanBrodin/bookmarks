@@ -87,9 +87,7 @@ export default async function Home({ searchParams }: HomeProps) {
         <div className="grid w-full grid-cols-5 gap-6 xl:gap-16">
           <div className="col-span-5 max-w-5xl lg:col-span-1">
             <nav className="sticky top-24">
-              <SidebarProvider className="min-h-fit flex-1">
-                <CategoriesSidebar />
-              </SidebarProvider>
+              <CategoriesSidebar />
             </nav>
           </div>
           <div className="col-span-5 space-y-2 lg:col-span-4">

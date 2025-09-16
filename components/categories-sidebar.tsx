@@ -4,6 +4,7 @@ import { useCallback } from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 
 import { categories } from "@/lib/categories"
+import { cn } from "@/lib/utils"
 import {
   Sidebar,
   SidebarContent,
@@ -13,6 +14,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarProvider,
 } from "@/components/ui/sidebar"
 
 export function CategoriesSidebar({
@@ -54,39 +56,75 @@ export function CategoriesSidebar({
   )
 
   return (
-    <Sidebar
-      className="sticky top-[calc(var(--header-height)+1px)] z-30 hidden bg-transparent lg:flex"
-      collapsible="none"
-      {...props}
-    >
-      <SidebarContent className="">
-        <div className="shrink-0" />
-        <SidebarGroup>
-          <SidebarGroupLabel>Categories</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu className="gap-0">
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  onClick={clearAllCategories}
-                  isActive={selectedCategory === null}
-                >
-                  All Categories
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              {categories.map((category) => (
-                <SidebarMenuItem key={category.value}>
-                  <SidebarMenuButton
-                    onClick={() => selectCategory(category.value)}
-                    isActive={selectedCategory === category.value}
-                  >
-                    {category.label}
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
-    </Sidebar>
+    <>
+      <SidebarProvider className="min-h-fit flex-1">
+        <Sidebar
+          className="hidden bg-transparent lg:flex"
+          collapsible="none"
+          {...props}
+        >
+          <SidebarContent className="">
+            <div className="shrink-0" />
+            <SidebarGroup>
+              <SidebarGroupLabel>Categories</SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu className="gap-0">
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      onClick={clearAllCategories}
+                      isActive={selectedCategory === null}
+                    >
+                      All Categories
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  {categories.map((category) => (
+                    <SidebarMenuItem key={category.value}>
+                      <SidebarMenuButton
+                        onClick={() => selectCategory(category.value)}
+                        isActive={selectedCategory === category.value}
+                      >
+                        {category.label}
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          </SidebarContent>
+        </Sidebar>
+      </SidebarProvider>
+      <div className="flex flex-col lg:hidden">
+        <div className="text-muted-foreground border-b px-0 pb-2.5 text-center font-mono text-xs uppercase">
+          Categories
+        </div>
+        <ul className="flex overflow-x-auto text-sm">
+          <li className="flex w-full flex-1">
+            <button
+              className={cn(
+                "text-muted-foreground shrink-0 p-2 text-sm text-nowrap",
+                selectedCategory === null && "bg-accent text-accent-foreground"
+              )}
+              onClick={clearAllCategories}
+            >
+              All categories
+            </button>
+          </li>
+          {categories.map((category) => (
+            <li key={category.value} className="flex w-full flex-1">
+              <button
+                className={cn(
+                  "text-muted-foreground shrink-0 p-2 text-sm text-nowrap",
+                  selectedCategory === category.value &&
+                    "bg-accent text-accent-foreground"
+                )}
+                onClick={() => selectCategory(category.value)}
+              >
+                {category.label}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </>
   )
 }

@@ -1,6 +1,5 @@
 import Link from "next/link"
 
-import { siteConfig } from "@/lib/config"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import AppIcon from "@/components/app-icon"
@@ -8,7 +7,6 @@ import { LayoutSelector } from "@/components/layout-selector"
 import { ThemeSelector } from "@/components/theme-selector"
 
 import { Header } from "./header"
-import { MobileNav } from "./mobile-nav"
 import { Toolbar } from "./toolbar"
 
 export function PageHeader() {
@@ -24,10 +22,6 @@ export function PageHeader() {
         <Separator orientation="vertical" />
         <ThemeSelector variant="small" />
       </Toolbar>
-      <MobileNav
-        items={siteConfig.navItems}
-        className="flex justify-end lg:hidden"
-      />
     </Header>
   )
 }
