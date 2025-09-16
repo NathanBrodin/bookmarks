@@ -1,6 +1,6 @@
+import { Noise } from "@/components/ui/backgrounds"
 import { PageFooter } from "@/components/page-footer"
 import { PageHeader } from "@/components/page-header"
-import { Noise } from "@/components/ui/backgrounds"
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (

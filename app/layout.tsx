@@ -4,12 +4,12 @@ import localFont from "next/font/local"
 
 import "./globals.css"
 
+import { siteConfig } from "@/lib/config"
+import { META_THEME_COLORS } from "@/hooks/use-meta-colors"
+import { Toaster } from "@/components/ui/sonner"
 import { ActiveThemeProvider } from "@/components/providers/active-theme-provider"
 import { LayoutProvider } from "@/components/providers/layout-provider"
 import { ThemeProvider } from "@/components/providers/theme-provider"
-import { META_THEME_COLORS } from "@/hooks/use-meta-colors"
-import { siteConfig } from "@/lib/config"
-import { Toaster } from "@/components/ui/sonner"
 
 const lora = Lora({
   variable: "--font-display",
