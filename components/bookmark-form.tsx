@@ -2,35 +2,57 @@
 
 import { useActionState, useCallback, useEffect, useState } from "react"
 import Image from "next/image"
+import { usePathname, useRouter } from "next/navigation"
+import { Bookmark } from "@/db/schema"
 
-import addBookmark from "@/lib/actions/bookmark"
+import addBookmark, {
+  deleteBookmark,
+  updateBookmark,
+} from "@/lib/actions/bookmark"
 import { categories } from "@/lib/categories"
 import { isValidUrl, normalizeUrl } from "@/lib/utils/url"
 import { useUrlMetadata } from "@/hooks/use-url-metadata"
 import { Button } from "@/components/ui/button"
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "./ui/card"
 import MultipleSelector, { Option } from "./ui/multiselect"
+import { Separator } from "./ui/separator"
 
-export function BookmarkForm() {
-  const [state, formAction, pending] = useActionState(addBookmark, null)
+interface BookmarkFormProps {
+  editingBookmark?: Bookmark | null
+}
+
+export function BookmarkForm({ editingBookmark }: BookmarkFormProps) {
+  const router = useRouter()
+  const pathname = usePathname()
+
+  const [addState, addFormAction, addPending] = useActionState(
+    addBookmark,
+    null
+  )
+  const [updateState, updateFormAction, updatePending] = useActionState(
+    updateBookmark,
+    null
+  )
+
+  const state = editingBookmark ? updateState : addState
+  const formAction = editingBookmark ? updateFormAction : addFormAction
+  const pending = editingBookmark ? updatePending : addPending
   const [selectedOptions, setSelectedOptions] = useState<Option[]>([])
   const [url, setUrl] = useState("")
   const [title, setTitle] = useState("")
   const [author, setAuthor] = useState("")
   const [favicon, setFavicon] = useState("")
-  const [isOpen, setIsOpen] = useState(false)
 
   const { metadata, loading, error, fetchMetadata, clearMetadata } =
     useUrlMetadata()
@@ -56,10 +78,34 @@ export function BookmarkForm() {
   // Reset form after successful submission
   useEffect(() => {
     if (state && !state.errors && !pending) {
-      resetForm()
-      setIsOpen(false)
+      if (editingBookmark) {
+        // Clear edit search param after successful update
+        router.push(pathname)
+      } else {
+        resetForm()
+      }
     }
-  }, [state, pending, resetForm])
+  }, [state, pending, resetForm, editingBookmark, router, pathname])
+
+  // Populate form fields when editingBookmark changes
+  useEffect(() => {
+    if (editingBookmark) {
+      setUrl(editingBookmark.url)
+      setTitle(editingBookmark.title)
+      setAuthor(editingBookmark.author || "")
+      setFavicon(editingBookmark.favicon || "")
+
+      // Set selected categories
+      const bookmarkCategories =
+        editingBookmark.categories?.map((cat) => ({
+          label: cat,
+          value: cat,
+        })) || []
+      setSelectedOptions(bookmarkCategories)
+    } else {
+      resetForm()
+    }
+  }, [editingBookmark, resetForm])
 
   const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawUrl = e.target.value
@@ -73,9 +119,9 @@ export function BookmarkForm() {
     }
   }
 
-  // Debounce URL metadata fetching
+  // Debounce URL metadata fetching (only for new bookmarks)
   useEffect(() => {
-    if (!url.trim()) return
+    if (!url.trim() || editingBookmark) return
 
     const timer = setTimeout(() => {
       const normalizedUrl = normalizeUrl(url)
@@ -85,24 +131,37 @@ export function BookmarkForm() {
     }, 500)
 
     return () => clearTimeout(timer)
-  }, [url, fetchMetadata])
+  }, [url, fetchMetadata, editingBookmark])
+
+  async function onDelete() {
+    if (editingBookmark) {
+      deleteBookmark(editingBookmark.id)
+    }
+  }
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        <Button variant="secondary" className="h-8 justify-start">
-          Add Bookmark
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <form action={formAction}>
-          <DialogHeader>
-            <DialogTitle>Add Bookmark</DialogTitle>
-            <DialogDescription>
-              Add a new bookmark to your collection.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
+    <Card className="h-fit w-full max-w-sm">
+      <CardHeader>
+        <CardTitle>
+          {editingBookmark ? "Edit Bookmark" : "Add Bookmark"}
+        </CardTitle>
+        <CardDescription>
+          {editingBookmark
+            ? "Update the bookmark details."
+            : "Add a new bookmark to your collection."}
+        </CardDescription>
+        <CardAction>
+          <Button variant="destructive" onClick={onDelete}>
+            Delete
+          </Button>
+        </CardAction>
+      </CardHeader>
+      <form action={formAction}>
+        {editingBookmark && (
+          <input type="hidden" name="id" value={editingBookmark.id} />
+        )}
+        <CardContent className="">
+          <div className="flex flex-col gap-6">
             <div className="grid gap-2">
               <Label htmlFor="url">URL</Label>
               <Input
@@ -117,14 +176,14 @@ export function BookmarkForm() {
                   Please enter a valid URL (e.g., https://example.com)
                 </p>
               )}
-              {loading && (
+              {loading && !editingBookmark && (
                 <p className="text-muted-foreground text-xs">
                   Fetching metadata...
                 </p>
               )}
               {error && <p className="text-destructive text-xs">{error}</p>}
               <p className="text-destructive text-xs" role="alert">
-                {state?.errors.url}
+                {state?.errors && "url" in state.errors ? state.errors.url : ""}
               </p>
             </div>
             <div className="grid gap-2">
@@ -150,7 +209,9 @@ export function BookmarkForm() {
                 />
               ))}
               <p className="text-destructive text-xs" role="alert">
-                {state?.errors.categories}
+                {state?.errors && "categories" in state.errors
+                  ? state.errors.categories
+                  : ""}
               </p>
             </div>
             <div className="relative">
@@ -182,7 +243,9 @@ export function BookmarkForm() {
                 className={metadata ? "border-green-200" : ""}
               />
               <p className="text-destructive text-xs" role="alert">
-                {state?.errors.title}
+                {state?.errors && "title" in state.errors
+                  ? state.errors.title
+                  : ""}
               </p>
             </div>
             <div className="grid gap-2">
@@ -217,7 +280,9 @@ export function BookmarkForm() {
                 )}
               </div>
               <p className="text-destructive text-xs" role="alert">
-                {state?.errors.favicon}
+                {state?.errors && "favicon" in state.errors
+                  ? state.errors.favicon
+                  : ""}
               </p>
             </div>
             <div className="grid gap-2">
@@ -238,22 +303,41 @@ export function BookmarkForm() {
                 className={metadata ? "border-green-200" : ""}
               />
               <p className="text-destructive text-xs" role="alert">
-                {state?.errors.author}
+                {state?.errors && "author" in state.errors
+                  ? state.errors.author
+                  : ""}
               </p>
             </div>
           </div>
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button variant="outline" onClick={resetForm}>
-                Cancel
-              </Button>
-            </DialogClose>
-            <Button type="submit" disabled={pending}>
-              {pending ? "Adding..." : "Add Bookmark"}
+        </CardContent>
+        <div className="py-4">
+          <Separator />
+        </div>
+        <CardFooter className="flex-col gap-2">
+          {!editingBookmark ? (
+            <Button variant="outline" className="w-full" onClick={resetForm}>
+              Cancel
             </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+          ) : (
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={() => router.push(window.location.pathname)}
+            >
+              Cancel
+            </Button>
+          )}
+          <Button type="submit" className="w-full" disabled={pending}>
+            {pending
+              ? editingBookmark
+                ? "Updating..."
+                : "Adding..."
+              : editingBookmark
+                ? "Update Bookmark"
+                : "Add Bookmark"}
+          </Button>
+        </CardFooter>
+      </form>
+    </Card>
   )
 }

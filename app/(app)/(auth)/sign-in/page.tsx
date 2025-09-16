@@ -24,7 +24,7 @@ export default function SignInPage() {
         const { data, error } = await authClient.signIn.email({
           email: value.email,
           password: value.password,
-          callbackURL: "/",
+          callbackURL: "/admin",
         })
 
         if (error) {
@@ -85,12 +85,6 @@ export default function SignInPage() {
                 <h1 className="text-xl font-bold">
                   Welcome to Nathan&apos;s Bookmarks
                 </h1>
-                <div className="text-center text-sm">
-                  Don&apos;t have an account?{" "}
-                  <a href="/sign-up" className="underline underline-offset-4">
-                    Sign up
-                  </a>
-                </div>
               </div>
 
               <div className="flex flex-col gap-4">
@@ -134,15 +128,6 @@ export default function SignInPage() {
                 </div>
 
                 <div className="grid gap-2">
-                  <div className="flex items-center">
-                    <Label htmlFor="password">Password</Label>
-                    <a
-                      href="/forgot-password"
-                      className="ml-auto inline-block text-sm underline underline-offset-4"
-                    >
-                      Forgot your password?
-                    </a>
-                  </div>
                   <form.Field
                     name="password"
                     validators={{
@@ -156,6 +141,7 @@ export default function SignInPage() {
                   >
                     {(field) => (
                       <>
+                        <Label htmlFor="password">Password</Label>
                         <Input
                           id={field.name}
                           name={field.name}
@@ -189,21 +175,7 @@ export default function SignInPage() {
             </div>
           </form>
           <div className="text-muted-foreground text-center text-xs text-balance">
-            By clicking sign in, you agree to our{" "}
-            <a
-              href="#"
-              className="hover:text-primary underline underline-offset-4"
-            >
-              Terms of Service
-            </a>{" "}
-            and{" "}
-            <a
-              href="#"
-              className="hover:text-primary underline underline-offset-4"
-            >
-              Privacy Policy
-            </a>
-            .
+            Only Nathan can sign in, because he is better than you. Sorry...
           </div>
         </Card>
       </div>
